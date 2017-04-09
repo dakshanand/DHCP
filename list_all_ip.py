@@ -80,6 +80,20 @@ def allot(cidr, alloted_yet, to_be_alloted):
 def allot_cidr(cidr, data):
 	ret = []
 	alloted_yet = int(0)
+	total_alloted = int(0)
+
+	for lab in data:
+		lab_name = lab[0]
+		num_machine = lab[1]
+
+		for i in range(32):
+			if (1 << int(i)) >= num_machine:
+				total_alloted += (1 << int(i))
+				break
+
+	# end mein +2 nai kia
+	data.append(['Other', (1 << (32 - cidr.split('/')[1])) - total_alloted ])
+	data.sort(key=operator.itemgetter(1),reverse=True)
 
 	for lab in data:
 		lab_name = lab[0]
