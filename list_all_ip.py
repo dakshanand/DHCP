@@ -1,7 +1,7 @@
 def convert_to_binary(inp):
 	inp = int(inp)
 	ret = str('')
-
+	
 	while inp:
 		temp = inp % 2
 		ret += str(temp)
@@ -12,7 +12,6 @@ def convert_to_binary(inp):
 
 def next(inp):
 	numbers = inp.split('.')
-
 	for i in range(3, 0, -1):
 		if int(numbers[i]) < 255:
 			numbers[i] = str(int(numbers[i]) + int(1))
@@ -54,8 +53,9 @@ def list_all_ip(subnet):
 def get_ip_list(cidr, num):
 	left = cidr.split('/')[0]
 	ret = []
-
-	for i in range(int(num)):
+	ret.append(left)
+	
+	for i in range(int(num) - 1):
 		temp = next(left)
 		ret.append(temp)
 		left = temp
@@ -97,7 +97,9 @@ def allot_cidr(cidr, data):
 		struct.append(given_cidr)
 		struct.append(ip_list)
 
-	
+		#print lab_name, "alloted", given_cidr, 'list :'
+		# for i in ip_list:
+		# 	print i
 
 		ret.append(struct)
 
