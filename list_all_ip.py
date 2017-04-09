@@ -93,7 +93,12 @@ def allot_cidr(cidr, data):
 				break
 
 	# end mein +2 nai kia
-	data.append(['Other', (1 << (32 - int(cidr.split('/')[1]))) - total_alloted ])
+	temp = (1 << (32 - int(cidr.split('/')[1]))) - total_alloted
+	for i in range(32):
+		if (1 << int(i)) > temp and i > 0:
+			temp = (1 << int(i-1))
+			break
+	data.append(['Other', temp])
 	data.sort(key=operator.itemgetter(1),reverse=True)
 
 	for lab in data:
@@ -112,20 +117,20 @@ def allot_cidr(cidr, data):
 		struct.append(given_cidr)
 		struct.append(ip_list)
 
-		#print lab_name, "alloted", given_cidr, 'list :'
-		# for i in ip_list:
-		# 	print i
+		print lab_name, "alloted", given_cidr, 'required:', num_machine, 'list :'
+		for i in ip_list:
+			print i
 
 		ret.append(struct)
 
 	return ret
 
 # TEST-CASE
-# allot_cidr('192.168.1.0/24', [
-# 	['a', 76],
-# 	['b', 54],
-# 	['c', 30],
-# 	['d', 4],
-# 	['e', 4],
-# 	['f', 4]
-# ])
+allot_cidr('192.168.1.0/24', [
+	['a', 76],
+	['b', 54],
+	['c', 30],
+	['d', 4],
+	['e', 4],
+	['f', 4]
+])
