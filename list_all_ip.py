@@ -12,6 +12,7 @@ def convert_to_binary(inp):
 
 def next(inp):
 	numbers = inp.split('.')
+	
 	for i in range(3, 0, -1):
 		if int(numbers[i]) < 255:
 			numbers[i] = str(int(numbers[i]) + int(1))
