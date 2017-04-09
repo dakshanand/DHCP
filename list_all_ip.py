@@ -12,7 +12,6 @@ def convert_to_binary(inp):
 
 def next(inp):
 	numbers = inp.split('.')
-
 	for i in range(3, 0, -1):
 		if int(numbers[i]) < 255:
 			numbers[i] = str(int(numbers[i]) + int(1))
@@ -51,8 +50,64 @@ def list_all_ip(subnet):
 
 	return ret
 
-# TEST-CASE
-	# a = list_all_ip('10.220.64.0/18')
+def get_ip_list(cidr, num):
+	left = cidr.split('/')[0]
+	ret = []
+	
+	for i in range(int(num)):
+		temp = next(left)
+		ret.append(temp)
+		left = temp
 
-	# for ip in a:
-	# 	print ip
+	return ret
+
+def allot(cidr, alloted_yet, to_be_alloted):
+	two_powers = []
+	right = int(-1)
+	for i in range(32):
+		if (1 << int(i)) >= to_be_alloted:
+			right = int(32) - i
+			break
+
+	ip = cidr.split('/')[0]
+	for i in range(alloted_yet):
+		ip = next(ip)
+
+	ret = ip + '/' + str(right)
+	return (ret, 2 ** (int(32) - right))
+
+def allot_cidr(cidr, data):
+	ret = []
+	alloted_yet = int(0)
+
+	for lab in data:
+		lab_name = lab[0]
+		num_machine = lab[1]
+
+		temp = allot(cidr, alloted_yet, num_machine)
+
+		given_cidr = temp[0]
+		alloted_yet += int(temp[1])
+
+		ip_list = get_ip_list(given_cidr, temp[1])
+
+		struct = []
+		struct.append(lab_name)
+		struct.append(given_cidr)
+		struct.append(ip_list)
+
+		print lab_name, "alloted", given_cidr
+
+		ret.append(struct)
+
+	return ret
+
+# TEST-CASE
+# allot_cidr('192.168.1.0/24', [
+# 	['a', 76],
+# 	['b', 54],
+# 	['c', 30],
+# 	['d', 4],
+# 	['e', 4],
+# 	['f', 4]
+# ])
