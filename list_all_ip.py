@@ -1,7 +1,8 @@
+import operator
 def convert_to_binary(inp):
 	inp = int(inp)
 	ret = str('')
-	
+
 	while inp:
 		temp = inp % 2
 		ret += str(temp)
@@ -54,7 +55,7 @@ def get_ip_list(cidr, num):
 	left = cidr.split('/')[0]
 	ret = []
 	ret.append(left)
-	
+
 	for i in range(int(num) - 1):
 		temp = next(left)
 		ret.append(temp)
@@ -92,7 +93,7 @@ def allot_cidr(cidr, data):
 				break
 
 	# end mein +2 nai kia
-	data.append(['Other', (1 << (32 - cidr.split('/')[1])) - total_alloted ])
+	data.append(['Other', (1 << (32 - int(cidr.split('/')[1]))) - total_alloted ])
 	data.sort(key=operator.itemgetter(1),reverse=True)
 
 	for lab in data:
