@@ -117,20 +117,20 @@ def allot_cidr(cidr, data):
 		struct.append(given_cidr)
 		struct.append(ip_list)
 
-		print lab_name, "alloted", given_cidr, 'required:', num_machine, 'list :'
-		for i in ip_list:
-			print i
+		# print lab_name, "alloted", given_cidr, 'required:', num_machine, 'list :'
+		# for i in ip_list:
+		# 	print i
 
 		ret.append(struct)
 
 	return ret
 
 # TEST-CASE
-allot_cidr('192.168.1.0/24', [
-	['a', 76],
-	['b', 54],
-	['c', 30],
-	['d', 4],
-	['e', 4],
-	['f', 4]
-])
+# allot_cidr('192.168.1.0/24', [
+# 	['a', 76],
+# 	['b', 54],
+# 	['c', 30],
+# 	['d', 4],
+# 	['e', 4],
+# 	['f', 4]
+# ])

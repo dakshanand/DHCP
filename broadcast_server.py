@@ -3,7 +3,7 @@ import socket
 import sys
 import operator
 import list_all_ip as lip
-
+import os
 addr = ('', 33333)
 UDPSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 UDPSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -21,6 +21,7 @@ try:
     server=''
     Machines=[]
     N=0
+    allocated_Macs=[]
     Labs=[]
     server_cidr = '0.0.0.0'
     for line in file:
@@ -30,7 +31,10 @@ try:
             #IP CIDR format
             server_cidr = line
             server=line.split('/')[0]
+
             cidr=int(line.split('/')[1])
+            server_cidr=lip.next(server_cidr.split('/')[0])+'/'+str(cidr)
+            #os.system('ifconfig enp4s0 '+(server_cidr.split('/')[0])+'/'+str(cidr))
             total_Machines=1<<(32-cidr)
         elif count==2:
             N=int(line)
@@ -49,7 +53,8 @@ try:
     for subnet in VLSM:
         # 0-lab 1-cidr 2-list 2-network 2-broadcast
 
-        Allocation.append((subnet[0],subnet[1],subnet[2],subnet[2][0],subnet[2][len(subnet[2])-1]))
+        Allocation.append((subnet[0],subnet[1],subnet[2],subnet[2][0],subnet[2][len(subnet[2])-1],subnet[2][1],subnet[2][1]))
+        Allocation[i][2].pop(0)
         Allocation[i][2].pop(0)
         Allocation[i][2].pop(len(Allocation[i][2])-1)
         i+=1
@@ -70,18 +75,27 @@ try:
         data=''
         i=0
         for Lab in Labs:
-
+            if mac in allocated_Macs:
+                data='IP was already allocated to this Machine'
+                out='IP was already allocated to'
+                break
             if lab==Lab[0]:
                 if len(Allocation[i][2])==0:
                     data='NO IPs Available'
+                    out='NO IPs Available to allocate to'
                     break
-                data+=Allocation[i][2][0]+'\n'
+                data+=Allocation[i][2][0]+'/'+Allocation[i][1].split('/')[1]+'\n'
                 Allocation[i][2].pop(0)
                 data+=Allocation[i][3]+'\n'
                 data+=Allocation[i][4]+'\n'
+                data+=Allocation[i][5]+'\n'
+                data+=Allocation[i][5]
+                out="Allocation Successful to MAC Address"
+                allocated_Macs.append(mac)
+                break
             i+=1
 
-        print "Allocation Successful to MAC Address",mac
+        print out,mac
         UDPSock.sendto(data, addr)
 
 except KeyboardInterrupt:
