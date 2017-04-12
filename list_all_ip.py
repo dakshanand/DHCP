@@ -117,10 +117,13 @@ def allot_cidr(cidr, data):
 	ret = []
 	alloted_yet = int(0)
 	total_alloted = int(0)
+	allowed = int(1 << (32 - int(cidr.split('/')[1])))
 
-	print 'before = ' + cidr
+	#print 'before = ' + cidr
 	cidr = first(cidr.split('/')[0], cidr.split('/')[1]) + '/' + cidr.split('/')[1]
-	print 'after = ' + cidr
+	#print 'after = ' + cidr
+
+	index = int(0)
 
 	for lab in data:
 		lab_name = lab[0]
@@ -128,12 +131,20 @@ def allot_cidr(cidr, data):
 
 		for i in range(32):
 			if (1 << int(i)) >= num_machine:
-				total_alloted += (1 << int(i))
-				break
+				if (1 << int(i)) + total_alloted > allowed:
+					data[index][1] = 0
+					break
+				else:
+					total_alloted += (1 << int(i))
+					break
+
+		index+=1
 
 	# end mein +2 nai kia
 	temp = (1 << (32 - int(cidr.split('/')[1]))) - total_alloted
 	for i in range(32):
+		if temp == 0:
+			break
 		if (1 << int(i)) > temp and i > 0:
 			temp = (1 << int(i-1))
 			break
@@ -143,6 +154,10 @@ def allot_cidr(cidr, data):
 	for lab in data:
 		lab_name = lab[0]
 		num_machine = lab[1]
+
+		if num_machine == 0:
+			#print lab_name, "alloted : none", 'required:', num_machine
+			continue
 
 		temp = allot(cidr, alloted_yet, num_machine)
 
@@ -165,8 +180,8 @@ def allot_cidr(cidr, data):
 	return ret
 
 # TEST-CASE
-# allot_cidr('10.4.5.8/23', [
-# 	['a', 76],
+# allot_cidr('10.4.5.8/24', [
+# 	['a', 126],
 # 	['b', 54],
 # 	['c', 30],
 # 	['d', 4],
