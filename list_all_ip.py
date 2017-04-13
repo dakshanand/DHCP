@@ -1,4 +1,5 @@
 import operator
+import copy
 def convert_to_binary(inp):
 	inp = int(inp)
 	ret = str('')
@@ -9,7 +10,7 @@ def convert_to_binary(inp):
 		inp /= 2
 
 	siz = len(ret)
-	
+
 	for i in range(0,8-siz):
 		ret += '0'
 	ret = (ret[::-1])
@@ -113,14 +114,15 @@ def allot(cidr, alloted_yet, to_be_alloted):
 	ret = ip + '/' + str(right)
 	return (ret, 2 ** (int(32) - right))
 
-def allot_cidr(cidr, data):
+def allot_cidr(cidr, data1):
+	data=copy.deepcopy(data1)
 	ret = []
 	alloted_yet = int(0)
 	total_alloted = int(0)
 	allowed = int(1 << (32 - int(cidr.split('/')[1])))
 
 	#print 'before = ' + cidr
-	cidr = first(cidr.split('/')[0], cidr.split('/')[1]) + '/' + cidr.split('/')[1]
+	# cidr = first(cidr.split('/')[0], cidr.split('/')[1]) + '/' + cidr.split('/')[1]
 	#print 'after = ' + cidr
 
 	index = int(0)
@@ -132,6 +134,7 @@ def allot_cidr(cidr, data):
 		for i in range(32):
 			if (1 << int(i)) >= num_machine:
 				if (1 << int(i)) + total_alloted > allowed:
+					data[index]=list(data[index])
 					data[index][1] = 0
 					break
 				else:
@@ -156,6 +159,12 @@ def allot_cidr(cidr, data):
 		num_machine = lab[1]
 
 		if num_machine == 0:
+			struct = []
+			struct.append(lab_name)
+			struct.append('')
+			struct.append([])
+
+			ret.append(struct)
 			#print lab_name, "alloted : none", 'required:', num_machine
 			continue
 
